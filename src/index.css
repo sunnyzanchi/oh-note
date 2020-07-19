@@ -1,0 +1,135 @@
+:root {
+  --background-primary: #212222;
+  --background-secondary: #191919;
+  --background-tertiary: #111;
+  --background-toolbar: #333;
+
+  --border-primary: #030303;
+
+  --text-primary: #fff;
+  --text-secondary: #ececec;
+}
+
+body {
+  background: var(--background-primary);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* ----------- */
+/*   Common    */
+/* ----------- */
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.gutter {
+  background: var(--border-primary);
+}
+
+.gutter:hover {
+  cursor: col-resize;
+}
+
+.toolbar {
+  align-items: center;
+  background: var(--background-toolbar);
+  display: flex;
+  height: 24px;
+  padding: 8px;
+}
+
+.toolbar-button {
+  background: #222;
+  border: 0;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 3px;
+  margin-right: 4px;
+}
+
+.toolbar-button--active {
+  color: rgb(233, 169, 31);
+}
+
+/* ----------- */
+/*  Left Pane  */
+/* ----------- */
+
+.tag-listing-container {
+  background: var(--background-tertiary);
+}
+
+.tag-listing-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tag-listing-item {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  padding: 4px;
+}
+
+.tag-listing-item--selected {
+  background: var(--background-secondary);
+}
+
+.tag-listing-name,
+.tag-listing-number {
+  margin: 0;
+}
+
+/* ----------- */
+/* Middle Pane */
+/* ----------- */
+
+.note-listing-container {
+  background: var(--background-secondary);
+}
+
+.note-listing-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.note-listing-name {
+  cursor: pointer;
+  padding: 4px;
+}
+
+.note-listing-name--selected {
+  background: var(--background-primary);
+}
+
+.note-listing-search {
+  background: var(--background-primary);
+  border: 0;
+  color: var(--text-secondary);
+  padding: 6px;
+}
+
+.note-listing-toolbar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ----------- */
+/* Right Pane  */
+/* ----------- */
+
+.editor-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.editor {
+  flex-grow: 1;
+}

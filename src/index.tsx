@@ -64,6 +64,9 @@ const App = () => {
   const [editing, setEditing] = useState(false)
   const [notes, setNotes] = useState(noteMap)
   const [selectedNote, setSelectedNote] = useState(null)
+  // TODO: When a new tag is selected,
+  // make sure the selected note is in that tag.
+  // If it's not, show the top note from that new tag.
   const [selectedTag, setSelectedTag] = useState(null)
   const [sizes, setSizes] = useState([33, 33, 33])
   console.log(selectedTag, tagMap.get(selectedTag))
@@ -80,6 +83,7 @@ const App = () => {
 
   const toggleEditing = () => setEditing((e) => !e)
 
+  // TODO: Make this transformation chain nicer
   const filteredNotes = selectedTag
     ? notes.filter((note, noteId) => {
         const notesInTag = tagMap.get(selectedTag)
@@ -118,7 +122,11 @@ const App = () => {
 
       <section className="editor-container">
         <EditorToolbar editing={editing} onEditing={toggleEditing} />
-        <Editor sizes={sizes} text={notes.get(selectedNote)?.content} />
+        <Editor
+          noteId={selectedNote}
+          sizes={sizes}
+          text={notes.get(selectedNote)?.content}
+        />
       </section>
     </Split>
   )

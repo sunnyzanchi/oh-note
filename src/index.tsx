@@ -3,78 +3,100 @@ import { render } from 'react-dom'
 import Split from 'react-split'
 import { add, set } from 'unchanged'
 import uuid from 'uuid/dist/esm-browser/v4'
+import { OrderedMap } from 'immutable'
 
 import Editor from './Editor'
 import EditorToolbar from './EditorToolbar'
 import NoteListing from './NoteListing'
 import TagListing from './TagListing'
 
-type Note = {
-  id: string
-  name: string
-  selected: boolean
-  tags: string[]
-  text: string
-}
+import loadFromStrings from './loadFromStrings'
 
-const setSelected = set('selected')
+import type { Note } from './NoteListing'
 
-const tags = [
-  {
-    name: 'Places',
-    numNotes: 10,
-  },
-  {
-    name: 'People',
-    numNotes: 10,
-  },
-  {
-    name: 'Ideas',
-    numNotes: 10,
-  },
-]
+const makeSelected = set('selected', true)
 
 const rawNotes = [
-  {
-    id: '12345',
-    name: 'Aetheal',
-    tags: ['Places', 'Places/Alassia'],
-    text:
-      'Aetheal is big by elven standards, but smaller by human and dwarven standards.\nNearly 10,000 elves live in Aetheal.',
-  },
-  {
-    id: '123556',
-    name: 'Enseria',
-  },
-  {
-    id: '6535432',
-    name: 'Funky Town',
-  },
+  `---
+tags: [Places, Places/Test Place 1]
+title: Test 1
+created: '2019-10-06T15:51:04.905Z'
+modified: '2020-07-18T20:17:36.164Z'
+---
+  
+  # Test 1
+  
+  Test number 1.`,
+  `---
+tags: [Places, Places/Test Place 2]
+title: Test 2
+created: '2019-07-27T12:49:00.748Z'
+modified: '2020-07-18T06:39:24.766Z'
+---
+  
+  # Test 2
+  
+  Test number 2.`,
+  `---
+tags: [Places, Places/Test Place 3]
+title: Test 3
+created: '2019-09-03T14:30:13.040Z'
+modified: '2020-07-12T22:12:32.277Z'
+---
+  
+  # Test 3
+  
+  Test number 3.`,
 ]
 
+const [tagMapRaw, noteMapRaw] = loadFromStrings(rawNotes)
+const tagMap = OrderedMap(tagMapRaw)
+const noteMap = OrderedMap(noteMapRaw)
+
 const newNote = () => ({
+  created: new Date().toISOString(),
+  content: '',
   id: uuid(),
-  name: 'Untitled',
+  title: 'Untitled',
 })
 
 const App = () => {
   const [editing, setEditing] = useState(false)
-  const [notes, setNotes] = useState(rawNotes)
-  const [selectedNoteId, setSelectedNoteId] = useState(null)
+  const [notes, setNotes] = useState(noteMap)
+  const [selectedNote, setSelectedNote] = useState(null)
   const [selectedTag, setSelectedTag] = useState(null)
   const [sizes, setSizes] = useState([33, 33, 33])
+  console.log(selectedTag, tagMap.get(selectedTag))
+
+  const tags = [...tagMap.entries()].map(([tag, ids]) => ({
+    name: tag,
+    numNotes: ids.length,
+  }))
 
   const addNote = () => {
-    setNotes((n) => add(null, newNote(), n) as Note[])
+    const note = newNote()
+    setNotes((n) => n.set(note.id, note))
   }
 
   const toggleEditing = () => setEditing((e) => !e)
 
-  const notesWithSelected = notes.map((note) =>
-    setSelected(selectedNoteId === note.id, note)
+  const filteredNotes = selectedTag
+    ? notes.filter((note, noteId) => {
+        const notesInTag = tagMap.get(selectedTag)
+        return notesInTag.includes(noteId)
+      })
+    : notes
+
+  const notesWithSelected = filteredNotes.has(selectedNote)
+    ? filteredNotes.update(
+        selectedNote,
+        (makeSelected as unknown) as (note: Note) => Note
+      )
+    : filteredNotes
+
+  const noteList = [...notesWithSelected.entries()].map(([id, note]) =>
+    set('id', id, note)
   ) as Note[]
-  // TODO: Don't loop through the notes twice
-  const selectedNote = notesWithSelected.find((n) => n.selected)
 
   return (
     <Split className="app-container" gutterSize={3} onDrag={setSizes}>
@@ -89,14 +111,14 @@ const App = () => {
       <section className="note-listing-container">
         <NoteListing
           onCreate={addNote}
-          onSelect={setSelectedNoteId}
-          notes={notesWithSelected}
+          onSelect={setSelectedNote}
+          notes={noteList}
         />
       </section>
 
       <section className="editor-container">
         <EditorToolbar editing={editing} onEditing={toggleEditing} />
-        <Editor sizes={sizes} text={selectedNote?.text} />
+        <Editor sizes={sizes} text={notes.get(selectedNote)?.content} />
       </section>
     </Split>
   )

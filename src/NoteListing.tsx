@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 
-type Note = {
+export type Note = {
+  content: string
   id: string
-  name: string
-  selected: boolean
+  title: string
+  selected?: boolean
 }
 
 type Props = {
@@ -15,10 +16,11 @@ type Props = {
 
 const NoteListing = ({ onCreate, onSelect, notes = [] }: Props) => {
   const [search, setSearch] = useState('')
+  console.log(notes)
 
   // TODO: Also do full text search of note content
   const filteredNotes = notes.filter((note) => {
-    const name = note.name.toLowerCase()
+    const name = note.title.toLowerCase()
 
     return name.includes(search.toLowerCase())
   })
@@ -49,7 +51,7 @@ const NoteListing = ({ onCreate, onSelect, notes = [] }: Props) => {
             key={note.id}
             onClick={() => onSelect(note.id)}
           >
-            {note.name}
+            {note.title}
           </li>
         ))}
       </ol>

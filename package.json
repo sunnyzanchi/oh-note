@@ -14,7 +14,9 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "dexie": "^3.0.1",
+    "immutable": "^4.0.0-rc.12",
     "monaco-editor": "^0.20.0",
+    "parse-md": "^2.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-split": "^2.0.9",

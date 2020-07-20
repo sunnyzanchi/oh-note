@@ -12,7 +12,6 @@ type Props = {
 self.MonacoEnvironment = {
   // @ts-ignore
   getWorkerUrl: function (moduleId, label) {
-    console.log(label)
     if (label === 'json') {
       return './json.worker.js'
     }
@@ -40,8 +39,11 @@ const Editor = ({ text = '' }: Props) => {
       container.current &&
       monaco.editor.create(container.current, {
         language: 'markdown',
-        value: text,
+        minimap: {
+          enabled: false,
+        },
         theme: 'hc-black',
+        value: text,
       })
   })
 
@@ -49,8 +51,8 @@ const Editor = ({ text = '' }: Props) => {
     if (!editor.current) return
 
     editor.current.layout()
+    // TODO: Save editor value when switching notes
     const lastValue = editor.current.getValue()
-    console.log(lastValue)
     editor.current.setValue(text)
   })
 

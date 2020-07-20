@@ -4,6 +4,7 @@
     "jsx": "react",
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "typeRoots": ["./src/types", "./node_modules/"]
   }
 }

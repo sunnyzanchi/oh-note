@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
+    "@types/classnames": "^2.2.10",
     "@types/react": "^16.9.43",
     "@types/react-dom": "^16.9.8",
     "parcel": "^1.12.4",

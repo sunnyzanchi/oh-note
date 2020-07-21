@@ -1,10 +1,10 @@
 import parseMd from 'parse-md'
 import uuid from 'uuid/dist/esm-browser/v4'
-import type { Note } from './NoteListing'
+import type { Note } from '../components/NoteListing'
 
 type NoteId = string
-type TagMap = Map<string, NoteId[]>
-type NoteMap = Map<NoteId, Note>
+export type TagMap = Map<string, NoteId[]>
+export type NoteMap = Map<NoteId, Note>
 
 /**
  * Create the app's internal data structure for tags and notes

@@ -16,7 +16,6 @@ type Props = {
 
 const NoteListing = ({ onCreate, onSelect, notes = [] }: Props) => {
   const [search, setSearch] = useState('')
-  console.log(notes)
 
   // TODO: Also do full text search of note content
   const filteredNotes = notes.filter((note) => {

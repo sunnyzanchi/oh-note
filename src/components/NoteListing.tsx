@@ -20,8 +20,10 @@ const NoteListing = ({ onCreate, onSelect, notes = [] }: Props) => {
   // TODO: Also do full text search of note content
   const filteredNotes = notes.filter((note) => {
     const name = note.title.toLowerCase()
+    const content = note.content.toLowerCase()
+    const term = search.toLowerCase()
 
-    return name.includes(search.toLowerCase())
+    return name.includes(term) || content.includes(term)
   })
 
   return (

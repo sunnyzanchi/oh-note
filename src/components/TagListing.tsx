@@ -2,8 +2,6 @@ import React from 'react'
 import cx from 'classnames'
 import { get } from 'unchanged'
 
-import type { TagMap } from '../utils/loadFromStrings'
-
 type Tag = {
   icon?: string
   name: string
@@ -20,7 +18,9 @@ const sum = (acc: number, item: number) => acc + item
 
 const allTags = (tags: Props['tags']): Tag => ({
   name: 'All Tags',
-  numNotes: (tags.map(get('numNotes')).reduce(sum, 0) as unknown) as number,
+  numNotes: tags
+    .map((get('numNotes') as unknown) as (t: Tag) => number)
+    .reduce(sum, 0) as number,
 })
 
 const TagListing = ({ selected, tags, onClick }: Props) => {

@@ -1,6 +1,6 @@
 import Dexie from 'dexie'
+import { useState, useEffect } from 'react'
 import { OrderedMap } from 'immutable'
-import { useDispatch } from 'react-redux'
 import { remove } from 'unchanged'
 
 // In order to use `db.notes` or `db.tags` and have correct intellisense,
@@ -73,6 +73,10 @@ class OhDatabase extends Dexie {
 
 const db = new OhDatabase()
 
+// Convert a TagMap to a list of Tags
+const tagMapToList = (tagMap: TagMap): Tag[] =>
+  [...tagMap.entries()].map(([name, notes]) => ({ name, notes }))
+
 // This hooks exposes functions that React components can call
 // to update the database and the redux state in a predictable way.
 // This also makes using the db more strict,
@@ -89,9 +93,31 @@ const db = new OhDatabase()
 // but it would have been more difficult if not impossible
 // to dispatch specific actions.
 export const useDb = () => {
-  const dispatch = useDispatch()
+  const [noteListState, setNoteListState] = useState<Note[]>([])
+  // TODO: When a new tag is selected,
+  // make sure the selected note is in that tag.
+  // If it's not, show the top note from that new tag.
+  const [selectedTag, setSelectedTag] = useState<Tag['name']>(null)
+  const [tagMapState, setTagMapState] = useState<TagMap>(OrderedMap())
 
-  return {
+  // Populate the tag list when the app starts
+  useEffect(() => {
+    console.log('setting tagMap')
+    fns.getTagMap().then(setTagMapState)
+  }, [])
+
+  // Load the note list associated with a tag when
+  // a new tag is selected
+  useEffect(() => {
+    if (selectedTag == null) return
+
+    const noteIds = tagMapState.get(selectedTag)
+    if (noteIds == null || noteIds?.length === 0) return
+
+    db.notes.bulkGet(noteIds).then(setNoteListState)
+  }, [selectedTag])
+
+  const fns = {
     importNotes: async (notes: Note[]) => {
       // 1) tagMap starts empty
       const tagMap = new Map<string, string[]>()
@@ -135,12 +161,16 @@ export const useDb = () => {
           (notes.map((n) => remove('tags', n)) as unknown) as Note[]
         ),
       ])
-
-      dispatch({ type: 'IMPORT_SUCCESS' })
     },
 
     getNoteTitles: (noteIds: Note['id'][]) => db.getNoteTitles(noteIds),
-
     getTagMap: () => db.getTagMap(),
+    noteList: noteListState,
+    selectTag: setSelectedTag,
+    selectedTag: selectedTag,
+    tagList: tagMapToList(tagMapState),
+    tagMap: tagMapState,
   }
+
+  return fns
 }

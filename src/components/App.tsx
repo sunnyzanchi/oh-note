@@ -9,6 +9,8 @@ import EditorToolbar from './EditorToolbar'
 import NoteListing from './NoteListing'
 import TagListing from './TagListing'
 
+import { useDb } from '../utils/db'
+
 import type { Note } from './NoteListing'
 
 type NoteMap = OrderedMap<string, Note>
@@ -34,14 +36,9 @@ const addSelected = (selectedNote: string, noteMap: NoteMap): NoteMap => {
 }
 
 const App = () => {
+  const db = useDb()
   const [editing, setEditing] = useState(false)
-  const [notes, setNotes] = useState([])
-  const [tags, setTags] = useState([])
   const [selectedNote, setSelectedNote] = useState(null)
-  // TODO: When a new tag is selected,
-  // make sure the selected note is in that tag.
-  // If it's not, show the top note from that new tag.
-  const [selectedTag, setSelectedTag] = useState(null)
   const [sizes, setSizes] = useState([33, 33, 33])
 
   const addNote = () => {}
@@ -51,9 +48,9 @@ const App = () => {
     <Split className="app-container" gutterSize={3} onDrag={setSizes}>
       <section className="tag-listing-container">
         <TagListing
-          selected={selectedTag}
-          tags={tags}
-          onClick={setSelectedTag}
+          selected={db.selectedTag}
+          tags={db.tagList}
+          onClick={db.selectTag}
         />
       </section>
 
@@ -61,7 +58,7 @@ const App = () => {
         <NoteListing
           onCreate={addNote}
           onSelect={setSelectedNote}
-          notes={notes}
+          notes={db.noteList}
         />
       </section>
 

@@ -22,9 +22,7 @@
     "parse-md": "^2.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-redux": "^7.2.0",
     "react-split": "^2.0.9",
-    "redux": "^4.0.5",
     "unchanged": "^2.2.1",
     "uuid": "^8.2.0"
   },
@@ -33,7 +31,6 @@
     "@types/classnames": "^2.2.10",
     "@types/react": "^16.9.43",
     "@types/react-dom": "^16.9.8",
-    "@types/react-redux": "^7.1.9",
     "parcel": "^1.12.4",
     "typescript": "^3.9.7"
   }

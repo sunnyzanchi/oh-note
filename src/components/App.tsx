@@ -44,6 +44,8 @@ const App = () => {
   const addNote = () => {}
   const toggleEditing = () => {}
 
+  const currentNote = db.noteList.find((n) => n.id === selectedNote)
+
   return (
     <Split className="app-container" gutterSize={3} onDrag={setSizes}>
       <section className="tag-listing-container">
@@ -64,7 +66,11 @@ const App = () => {
 
       <section className="editor-container">
         <EditorToolbar editing={editing} onEditing={toggleEditing} />
-        <Editor noteId={selectedNote} sizes={sizes} text={''} />
+        <Editor
+          noteId={selectedNote}
+          sizes={sizes}
+          text={currentNote?.content || ''}
+        />
       </section>
     </Split>
   )

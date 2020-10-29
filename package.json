@@ -12,6 +12,7 @@
   "author": "Zanchi <emzanchi@gmail.com> (https://github.com/zanchi)",
   "license": "ISC",
   "browserslist": [
+    "last 2 Chrome versions",
     "last 2 Firefox versions"
   ],
   "dependencies": {

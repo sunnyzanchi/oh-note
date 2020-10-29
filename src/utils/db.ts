@@ -102,7 +102,6 @@ export const useDb = () => {
 
   // Populate the tag list when the app starts
   useEffect(() => {
-    console.log('setting tagMap')
     fns.getTagMap().then(setTagMapState)
   }, [])
 

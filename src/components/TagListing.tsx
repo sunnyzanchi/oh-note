@@ -27,6 +27,9 @@ type Props = {
   onClick: (tagName: string) => void
 }
 
+// Left padding for top level list items
+const MIN_PADDING = 12
+
 const sum = (acc: number, item: number) => acc + item
 
 const allTags = (tags: Props['tags']): IncomingTag => ({
@@ -52,13 +55,14 @@ const TagLine = ({
       )}
       key={tag.name}
       onClick={() => onClick([...prefix, tag.name].join('/'))}
-      style={{ paddingLeft: `${indent * 20}px` }}
+      style={{ paddingLeft: `${indent * 20 + MIN_PADDING}px` }}
     >
       <p className="tag-listing-name">{tag.name}</p>
       <p className="tag-listing-number">{tag?.numNotes}</p>
     </li>
     {tag.children.map((t) => (
       <TagLine
+        key={t.name}
         indent={indent + 1}
         prefix={[...prefix, tag.name]}
         onClick={onClick}
@@ -70,13 +74,29 @@ const TagLine = ({
 )
 
 const TagListing = ({ selected, tags, onClick }: Props) => {
+  // Recursively turn the list of tags from a list like:
+  // [
+  //   'Places/New York',
+  //   'Food/Fruit'
+  // ]
+  //
+  // into a tree:
+  // [
+  //   { name: 'Places', children: [{ name: 'New York' }] } ,
+  //   { name: 'Food', children: [{ name: 'Fruit' }] }
+  // ]
   const hierarchied = makeHierarchical([allTags(tags), ...tags])
 
   return (
     <div>
       <ol className="tag-listing-list">
         {hierarchied.map((tag) => (
-          <TagLine onClick={onClick} selected={selected} tag={tag} />
+          <TagLine
+            key={tag.name}
+            onClick={onClick}
+            selected={selected}
+            tag={tag}
+          />
         ))}
       </ol>
     </div>

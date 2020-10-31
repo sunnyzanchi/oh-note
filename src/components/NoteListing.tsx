@@ -18,13 +18,16 @@ const NoteListing = ({ onCreate, onSelect, notes = [] }: Props) => {
   const [search, setSearch] = useState('')
 
   // TODO: Also do full text search of note content
-  const filteredNotes = notes.filter((note) => {
-    const name = note.title.toLowerCase()
-    const content = note.content.toLowerCase()
-    const term = search.toLowerCase()
+  const filteredNotes = notes
+    .filter((note) => {
+      const name = note.title.toLowerCase()
+      const content = note.content.toLowerCase()
+      const term = search.toLowerCase()
 
-    return name.includes(term) || content.includes(term)
-  })
+      return name.includes(term) || content.includes(term)
+    })
+    // TODO: Allow sort by title and last modified
+    .sort((a, b) => a.title > b.title)
 
   return (
     <div>

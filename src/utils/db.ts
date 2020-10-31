@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { OrderedMap } from 'immutable'
 import { remove } from 'unchanged'
 
+import dedup from './dedup'
+
 // In order to use `db.notes` or `db.tags` and have correct intellisense,
 // we have to make a class that extends Dexie and give TS the info it needs.
 // More info is available in Dexie's docs:
@@ -73,9 +75,15 @@ class OhDatabase extends Dexie {
 
 const db = new OhDatabase()
 
+window.db = db
+
 // Convert a TagMap to a list of Tags
 const tagMapToList = (tagMap: TagMap): Tag[] =>
-  [...tagMap.entries()].map(([name, notes]) => ({ name, notes }))
+  [...tagMap.entries()].map(([name, notes]) => ({
+    name,
+    notes,
+    numNotes: notes.length,
+  }))
 
 // This hooks exposes functions that React components can call
 // to update the database and the redux state in a predictable way.
@@ -97,8 +105,30 @@ export const useDb = () => {
   // TODO: When a new tag is selected,
   // make sure the selected note is in that tag.
   // If it's not, show the top note from that new tag.
-  const [selectedTag, setSelectedTag] = useState<Tag['name']>(null)
+  const [selectedTag, setSelectedTag] = useState<Tag['name']>('All Tags')
   const [tagMapState, setTagMapState] = useState<TagMap>(OrderedMap())
+
+  const updateNoteList = () => {
+    if (selectedTag == null) return
+
+    if (selectedTag === 'All Tags') {
+      db.notes.toArray().then(setNoteListState)
+      return
+    }
+
+    // We want to get any notes that belong to nested tags
+    // ie, selecting 'Places' should also select notes in 'Places/New York'
+    const noteIds = dedup(
+      tagMapState
+        .toArray()
+        .filter(([k]) => k.startsWith(selectedTag))
+        .flatMap(([_, v]) => v)
+    )
+
+    if (noteIds == null || noteIds?.length === 0) return
+
+    db.notes.bulkGet(noteIds).then(setNoteListState)
+  }
 
   // Populate the tag list when the app starts
   useEffect(() => {
@@ -107,14 +137,7 @@ export const useDb = () => {
 
   // Load the note list associated with a tag when
   // a new tag is selected
-  useEffect(() => {
-    if (selectedTag == null) return
-
-    const noteIds = tagMapState.get(selectedTag)
-    if (noteIds == null || noteIds?.length === 0) return
-
-    db.notes.bulkGet(noteIds).then(setNoteListState)
-  }, [selectedTag])
+  useEffect(updateNoteList, [selectedTag])
 
   const fns = {
     importNotes: async (notes: Note[]) => {
@@ -160,6 +183,14 @@ export const useDb = () => {
           (notes.map((n) => remove('tags', n)) as unknown) as Note[]
         ),
       ])
+
+      // Update tagMapState so any new tags show up
+      // TODO: Actually make new tags show up, this isn't working
+      fns.getTagMap().then(setTagMapState)
+
+      // And also update the notelist, in case the newly imported note(s)
+      // are in the tag the user has currently selected
+      updateNoteList()
     },
 
     getNoteTitles: (noteIds: Note['id'][]) => db.getNoteTitles(noteIds),

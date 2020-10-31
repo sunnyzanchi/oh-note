@@ -1,7 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
+
 :root {
   --background-primary: #212222;
   --background-secondary: #191919;
+  --background-secondary-hover: #212121;
   --background-tertiary: #111;
+  --background-tertiary-hover: #171717;
   --background-toolbar: #333;
 
   --border-primary: #030303;
@@ -13,6 +17,8 @@
 body {
   background: var(--background-primary);
   color: var(--text-primary);
+  font-family: 'PT Sans', sans-serif;
+  font-size: 14px;
   margin: 0;
 }
 
@@ -70,10 +76,15 @@ body {
 }
 
 .tag-listing-item {
+  align-items: center;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
-  padding: 4px;
+  padding: 7px;
+}
+
+.tag-listing-item:hover {
+  background: var(--background-tertiary-hover);
 }
 
 .tag-listing-item--selected {
@@ -83,6 +94,10 @@ body {
 .tag-listing-name,
 .tag-listing-number {
   margin: 0;
+}
+
+.tag-listing-number {
+  font-size: 10px;
 }
 
 /* ----------- */
@@ -101,7 +116,11 @@ body {
 
 .note-listing-name {
   cursor: pointer;
-  padding: 4px;
+  padding: 7px;
+}
+
+.note-listing-name:hover {
+  background: var(--background-secondary-hover);
 }
 
 .note-listing-name--selected {

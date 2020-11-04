@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { OrderedMap } from 'immutable'
 import { remove } from 'unchanged'
 
+import { NewTag } from '../components/CreateTag'
 import dedup from './dedup'
 
 // In order to use `db.notes` or `db.tags` and have correct intellisense,
@@ -140,6 +141,9 @@ export const useDb = () => {
   useEffect(updateNoteList, [selectedTag])
 
   const fns = {
+    createTag: (item: NewTag) => {
+      return db.tags.add({ ...item, notes: [] })
+    },
     importNotes: async (notes: Note[]) => {
       // 1) tagMap starts empty
       const tagMap = new Map<string, string[]>()

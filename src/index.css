@@ -1,7 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
 
 :root {
+  --accent-primary: #c36b13;
+
   --background-primary: #212222;
+  --background-modal: #131313;
   --background-secondary: #191919;
   --background-secondary-hover: #212121;
   --background-tertiary: #111;
@@ -9,12 +12,15 @@
   --background-toolbar: #333;
 
   --border-primary: #030303;
+  --border-modal: #434343;
 
   --text-primary: #fff;
   --text-secondary: #ececec;
 }
 
-body {
+body,
+button,
+input {
   background: var(--background-primary);
   color: var(--text-primary);
   font-family: 'PT Sans', sans-serif;
@@ -58,7 +64,7 @@ body {
 }
 
 .toolbar-button--active {
-  color: rgb(233, 169, 31);
+  color: var(--accent-primary);
 }
 
 /* ----------- */
@@ -96,6 +102,22 @@ body {
   margin: 0;
 }
 
+.tag-listing-new-tag-button {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--border-primary);
+  border-top: 1px solid var(--border-primary);
+  cursor: pointer;
+  display: block;
+  padding: 12px;
+  text-align: center;
+  width: 100%;
+}
+
+.tag-listing-new-tag-button:hover {
+  background: var(--background-tertiary-hover);
+}
+
 .tag-listing-number {
   font-size: 10px;
 }
@@ -131,6 +153,8 @@ body {
   background: var(--background-primary);
   border: 0;
   color: var(--text-secondary);
+  flex-grow: 1;
+  margin-right: 16px;
   padding: 6px;
 }
 
@@ -150,5 +174,89 @@ body {
 }
 
 .editor {
+  flex-grow: 1;
+}
+
+/* ---------------- */
+/* Create Tag Modal */
+/* ---------------- */
+
+.create-tag-backdrop {
+  background: rgba(0, 0, 0, 0.4);
+  display: grid;
+  height: 100vh;
+  left: 0;
+  place-items: center;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+}
+
+.create-tag-button {
+  background: var(--background-primary);
+  border: 0;
+  border-radius: 2px;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 10px 32px;
+}
+
+.create-tag-button:hover {
+  background: var(--background-secondary);
+}
+
+.create-tag-button:not(:last-of-type) {
+  margin-right: 12px;
+}
+
+.create-tag-button--primary {
+  color: var(--accent-primary);
+}
+
+.create-tag-color-input {
+  background: none;
+  border: 0;
+}
+
+.create-tag-color-input:hover {
+  cursor: pointer;
+}
+
+.create-tag-container {
+  background: var(--background-modal);
+  border: 1px solid var(--border-modal);
+  border-radius: 6px;
+  margin: 24px;
+  max-width: 400px;
+  padding: 32px;
+  width: 95%;
+}
+
+.create-tag-label {
+  align-items: center;
+  display: flex;
+  margin-bottom: 24px;
+}
+
+.create-tag-name {
+  margin-right: 12px;
+}
+
+.create-tag-section:not(:last-of-type) {
+  margin-bottom: 30px;
+}
+
+.create-tag-section--buttons {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.create-tag-text-input {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border-modal);
+  caret-color: var(--accent-primary);
+  color: var(--text-primary);
   flex-grow: 1;
 }

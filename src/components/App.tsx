@@ -4,6 +4,7 @@ import { add, set } from 'unchanged'
 import uuid from 'uuid/dist/esm-browser/v4'
 import { OrderedMap } from 'immutable'
 
+import CreateTag from './CreateTag'
 import Editor from './Editor'
 import EditorToolbar from './EditorToolbar'
 import NoteListing from './NoteListing'
@@ -39,7 +40,9 @@ const App = () => {
   const db = useDb()
   const [editing, setEditing] = useState(false)
   const [selectedNote, setSelectedNote] = useState(null)
-  const [sizes, setSizes] = useState([33, 33, 33])
+  const [sizes, setSizes] = useState([20, 20, 60])
+  // Create new tag modal
+  const [showModal, setShowModal] = useState(false)
 
   const addNote = () => {}
   const toggleEditing = () => {}
@@ -47,32 +50,50 @@ const App = () => {
   const currentNote = db.noteList.find((n) => n.id === selectedNote)
 
   return (
-    <Split className="app-container" gutterSize={3} onDrag={setSizes}>
-      <section className="tag-listing-container">
-        <TagListing
-          selected={db.selectedTag}
-          tags={db.tagList}
-          onClick={db.selectTag}
-        />
-      </section>
+    <React.Fragment>
+      <Split
+        className="app-container"
+        gutterSize={3}
+        sizes={sizes}
+        onDrag={setSizes}
+      >
+        <section className="tag-listing-container">
+          <TagListing
+            selected={db.selectedTag}
+            tags={db.tagList}
+            onClick={db.selectTag}
+            onCreate={() => setShowModal(true)}
+          />
+        </section>
 
-      <section className="note-listing-container">
-        <NoteListing
-          onCreate={addNote}
-          onSelect={setSelectedNote}
-          notes={db.noteList}
-        />
-      </section>
+        <section className="note-listing-container">
+          <NoteListing
+            onCreate={addNote}
+            onSelect={setSelectedNote}
+            notes={db.noteList}
+          />
+        </section>
 
-      <section className="editor-container">
-        <EditorToolbar editing={editing} onEditing={toggleEditing} />
-        <Editor
-          noteId={selectedNote}
-          sizes={sizes}
-          text={currentNote?.content || ''}
+        <section className="editor-container">
+          <EditorToolbar editing={editing} onEditing={toggleEditing} />
+          <Editor
+            noteId={selectedNote}
+            sizes={sizes}
+            text={currentNote?.content || ''}
+          />
+        </section>
+      </Split>
+
+      {showModal && (
+        <CreateTag
+          onCancel={() => setShowModal(false)}
+          onSave={(newTag) => {
+            db.createTag(newTag)
+            setShowModal(false)
+          }}
         />
-      </section>
-    </Split>
+      )}
+    </React.Fragment>
   )
 }
 

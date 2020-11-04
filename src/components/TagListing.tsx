@@ -25,8 +25,10 @@ type Props = {
   selected: string
   tags: IncomingTag[]
   onClick: (tagName: string) => void
+  onCreate: () => void
 }
 
+const FULL_WIDTH_PLUS = '\uff0b'
 // Left padding for top level list items
 const MIN_PADDING = 12
 
@@ -73,7 +75,7 @@ const TagLine = ({
   </React.Fragment>
 )
 
-const TagListing = ({ selected, tags, onClick }: Props) => {
+const TagListing = ({ selected, tags, onClick, onCreate }: Props) => {
   // Recursively turn the list of tags from a list like:
   // [
   //   'Places/New York',
@@ -99,6 +101,9 @@ const TagListing = ({ selected, tags, onClick }: Props) => {
           />
         ))}
       </ol>
+      <button className="tag-listing-new-tag-button" onClick={onCreate}>
+        New Tag {FULL_WIDTH_PLUS}
+      </button>
     </div>
   )
 }

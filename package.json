@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "classnames": "^2.2.6",
-    "dexie": "^3.0.1",
+    "dexie": "^3.2.2",
     "immutable": "^4.0.0-rc.12",
     "jest": "^26.1.0",
     "monaco-editor": "^0.20.0",
